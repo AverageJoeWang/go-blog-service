@@ -2,17 +2,30 @@ package main
 
 import (
 	"go-blog-service/global"
+	"go-blog-service/internal/model"
 	"go-blog-service/internal/routers"
+	"go-blog-service/pkg/logger"
 	"go-blog-service/pkg/setting"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"log"
 	"net/http"
 	"time"
 )
 
-func init()  {
+func init() {
 	err := setupSetting()
 	if err != nil {
 		log.Fatalf("init setupSetting err: %v", err)
+	}
+
+	err = setupDBEngine()
+	if err != nil {
+		log.Fatalf("init setupDBEngine err: %v", err)
+	}
+
+	err = setupLogger()
+	if err != nil {
+		log.Fatalf("init setupLogger err: %v", err)
 	}
 }
 
@@ -32,7 +45,6 @@ func main() {
 	}
 	_ = s.ListenAndServe()
 }
-
 
 func setupSetting() error {
 	s, err := setting.NewSetting()
@@ -70,6 +82,28 @@ func setupSetting() error {
 	//if runMode != "" {
 	//	global.ServerSetting.RunMode = runMode
 	//}
+
+	return nil
+}
+//初始化数据库
+func setupDBEngine() error {
+	var err error
+	global.DBEngine, err = model.NewDBEngine(global.DatabaseSetting)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//初始化logger
+func setupLogger() error {
+	fileName := global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName + global.AppSetting.LogFileExt
+	global.Logger = logger.NewLogger(&lumberjack.Logger{
+		Filename:  fileName,
+		MaxSize:   500,
+		MaxAge:    10,
+		LocalTime: true,
+	}, "", log.LstdFlags).WithCaller(2)
 
 	return nil
 }

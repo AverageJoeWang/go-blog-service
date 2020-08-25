@@ -3,7 +3,7 @@ IF
     NOT EXISTS blog_service DEFAULT CHARACTER
     SET UTF8mb4 DEFAULT COLLATE UTF8mB4_GENERAL_CI;
 
-
+use blog_service
 
 CREATE TABLE `blog_tag` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
