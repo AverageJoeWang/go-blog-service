@@ -29,6 +29,10 @@ func init() {
 	}
 }
 
+// @title 博客系统
+// @version 1.0
+// @description goblog
+// @termsOfService github
 func main() {
 	// r := gin.Default()
 	// r.GET("/PING", func(c *gin.Context) {
